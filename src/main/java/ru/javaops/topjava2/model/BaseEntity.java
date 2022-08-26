@@ -30,7 +30,7 @@ public abstract class BaseEntity implements Persistable<Integer>, HasId {
         return id;
     }
 
-    @JsonIgnore
+    @Schema(hidden = true)
     @Override
     public boolean isNew() {
         return id == null;
