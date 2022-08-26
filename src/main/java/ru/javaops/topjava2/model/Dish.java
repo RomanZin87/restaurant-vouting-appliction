@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -20,7 +21,7 @@ public class Dish extends NamedEntity {
     private Restaurant restaurant;
 
     @Column(name = "created", nullable = false, columnDefinition = "timestamp default now()", updatable = false)
-    private Date created = new Date();
+    private LocalDate created = LocalDate.now();
 
     @Column(name = "price", nullable = false)
     private Integer price;
