@@ -8,9 +8,9 @@ VALUES ('USER', 1),
        ('USER', 2);
 
 INSERT INTO RESTAURANT (name)
-VALUES ('PIZZA HOT'),
-       ('HALVA'),
-       ('HUTOROK');
+VALUES ('Pizzitalia'),
+       ('Халва'),
+       ('Хуторок');
 
 INSERT INTO DISH (name, price, restaurant_id)
 VALUES ('Маргарита', 500, 1),
