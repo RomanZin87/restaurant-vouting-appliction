@@ -43,6 +43,7 @@ public class VoteController {
         log.info("user {} revote for restaurant {}", userId, vote.getRestaurantId());
         checkToLateVote(vote);
         repository.delete(userId);
+        vote.setUserId(userId);
         repository.save(vote);
     }
 
