@@ -12,6 +12,7 @@ import ru.javaops.rzinnatov.repository.VoteRepository;
 import ru.javaops.rzinnatov.web.AuthUser;
 
 import java.time.LocalTime;
+import java.util.List;
 
 import static ru.javaops.rzinnatov.util.validation.ValidationUtil.checkNew;
 
@@ -43,10 +44,16 @@ public class VoteController {
         repository.delete(userId);
     }
 
-    @GetMapping("/statistic")
-    public Integer checkResults(@AuthenticationPrincipal AuthUser authUser, int restaurantId) {
-        log.info("checking vote results");
+    @GetMapping("/{restaurantId}")
+    public Integer checkResults(@AuthenticationPrincipal AuthUser authUser, @PathVariable int restaurantId) {
+        log.info("checking vote counts for restaurant {}", restaurantId);
         return repository.countVotesByRestaurantId(restaurantId);
+    }
+
+    @GetMapping("/statistic")
+    public List<Object[]> checkResults(@AuthenticationPrincipal AuthUser authUser) {
+        log.info("checking vote results");
+        return repository.searchCustom();
     }
 
     private static void checkToLateVote(Vote vote) {
