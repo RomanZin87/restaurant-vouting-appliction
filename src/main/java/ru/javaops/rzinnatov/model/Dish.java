@@ -31,4 +31,9 @@ public class Dish extends NamedEntity {
     @NotNull
     @Range(min = 100, max = 2500)
     private Integer price;
+
+    public Dish(Integer id, String name, int price) {
+        super(id, name);
+        this.price = price;
+    }
 }

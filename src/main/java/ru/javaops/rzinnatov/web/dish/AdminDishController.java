@@ -23,45 +23,45 @@ import static ru.javaops.rzinnatov.util.validation.ValidationUtil.assureIdConsis
 @AllArgsConstructor
 @RequestMapping(value = AdminDishController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class AdminDishController {
-    public static final String REST_URL = "/api/admin/dish";
+    public static final String REST_URL = "/api/admin/restaurant/{restaurantId}/dish";
 
     private final DishRepository dishRepository;
     private final DishService dishService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Dish> get(@PathVariable int id, int restaurantId) {
+    public ResponseEntity<Dish> get(@PathVariable int id, @PathVariable int restaurantId) {
         log.info("get dish {} for restaurant {}", id, restaurantId);
         return ResponseEntity.of(dishRepository.get(id, restaurantId));
     }
 
     @GetMapping
-    public List<Dish> getAll(int restaurantId) {
+    public List<Dish> getAll(@PathVariable int restaurantId) {
         log.info("getAll for restaurant {}", restaurantId);
         return dishRepository.getAll(restaurantId);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable int id, int restaurantId) {
+    public void delete(@PathVariable int id, @PathVariable int restaurantId) {
         log.info("delete dish {} for restaurant {}", id, restaurantId);
         Dish dish = dishRepository.checkBelong(id, restaurantId);
         dishRepository.delete(dish);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<Dish> createWithLocation(@Valid @RequestBody Dish dish, int restaurantId) {
+    ResponseEntity<Dish> createWithLocation(@Valid @RequestBody Dish dish, @PathVariable int restaurantId) {
         log.info("create dish {} for restaurant {}", dish, restaurantId);
         checkNew(dish);
         Dish created = dishService.save(dish, restaurantId);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
-                .buildAndExpand(created.getId()).toUri();
+                .buildAndExpand(restaurantId, created.getId()).toUri();
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(int restaurantId, @PathVariable int id, @Valid @RequestBody Dish dish) {
+    public void update(@PathVariable int restaurantId, @PathVariable int id, @Valid @RequestBody Dish dish) {
         log.info("update {} for restaurant {}", dish, restaurantId);
         assureIdConsistent(dish, id);
         dishRepository.checkBelong(id, restaurantId);
