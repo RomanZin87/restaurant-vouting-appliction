@@ -21,6 +21,7 @@ import java.time.LocalTime;
 public class Vote extends BaseEntity {
 
     @Column(name = "restaurant_id", nullable = false)
+    @NotNull
     Integer restaurantId;
 
     @Column(name = "user_id", nullable = false)

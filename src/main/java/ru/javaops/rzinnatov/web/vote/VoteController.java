@@ -11,10 +11,11 @@ import ru.javaops.rzinnatov.model.Vote;
 import ru.javaops.rzinnatov.repository.VoteRepository;
 import ru.javaops.rzinnatov.web.AuthUser;
 
+import javax.validation.Valid;
 import java.time.LocalTime;
 import java.util.List;
 
-import static ru.javaops.rzinnatov.util.validation.ValidationUtil.checkNew;
+import static ru.javaops.rzinnatov.util.validation.ValidationUtil.*;
 
 @Slf4j
 @RestController
@@ -27,12 +28,21 @@ public class VoteController {
     private final VoteRepository repository;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void vote(@AuthenticationPrincipal AuthUser authUser, @RequestBody Vote vote) {
+    public void vote(@AuthenticationPrincipal AuthUser authUser, @RequestBody @Valid Vote vote) {
         int userId = authUser.id();
         vote.setUserId(userId);
         log.info("user {} vote for restaurant {}", userId, vote.getRestaurantId());
         checkNew(vote);
         checkToLateVote(vote);
+        repository.save(vote);
+    }
+
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void reVote(@AuthenticationPrincipal AuthUser authUser, @RequestBody @Valid Vote vote) {
+        int userId = authUser.id();
+        log.info("user {} revote for restaurant {}", userId, vote.getRestaurantId());
+        checkToLateVote(vote);
+        repository.delete(userId);
         repository.save(vote);
     }
 
