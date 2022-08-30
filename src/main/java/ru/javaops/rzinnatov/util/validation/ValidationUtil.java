@@ -37,6 +37,12 @@ public class ValidationUtil {
         return obj;
     }
 
+    public static <T> void checkExistedByEmail(T obj, String email) {
+        if (obj == null) {
+            throw new IllegalRequestDataException("Entity with email=" + email + " not found");
+        }
+    }
+
     //  https://stackoverflow.com/a/65442410/548473
     @NonNull
     public static Throwable getRootCause(@NonNull Throwable t) {

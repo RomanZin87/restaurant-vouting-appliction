@@ -10,6 +10,8 @@ import ru.javaops.rzinnatov.model.User;
 import ru.javaops.rzinnatov.repository.UserRepository;
 import ru.javaops.rzinnatov.util.UserUtil;
 
+import static ru.javaops.rzinnatov.util.validation.ValidationUtil.checkExisted;
+
 @Slf4j
 public abstract class AbstractUserController {
 
@@ -26,6 +28,7 @@ public abstract class AbstractUserController {
 
     public ResponseEntity<User> get(int id) {
         log.info("get {}", id);
+        checkExisted(repository.getExisted(id), id);
         return ResponseEntity.of(repository.findById(id));
     }
 

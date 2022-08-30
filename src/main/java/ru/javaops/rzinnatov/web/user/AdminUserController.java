@@ -17,8 +17,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
-import static ru.javaops.rzinnatov.util.validation.ValidationUtil.assureIdConsistent;
-import static ru.javaops.rzinnatov.util.validation.ValidationUtil.checkNew;
+import static ru.javaops.rzinnatov.util.validation.ValidationUtil.*;
 
 @RestController
 @RequestMapping(value = AdminUserController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -71,6 +70,7 @@ public class AdminUserController extends AbstractUserController {
     @GetMapping("/by-email")
     public ResponseEntity<User> getByEmail(@RequestParam String email) {
         log.info("getByEmail {}", email);
+        checkExistedByEmail(repository.getByEmail(email).orElse(null), email);
         return ResponseEntity.of(repository.getByEmail(email));
     }
 

@@ -9,6 +9,8 @@ import ru.javaops.rzinnatov.repository.RestaurantRepository;
 
 import java.util.List;
 
+import static ru.javaops.rzinnatov.util.validation.ValidationUtil.checkExisted;
+
 @Slf4j
 public class AbstractRestaurantController {
 
@@ -22,6 +24,7 @@ public class AbstractRestaurantController {
 
     public ResponseEntity<Restaurant> getWithDishes(int id) {
         log.info("getWithDishes {}", id);
+        checkExisted(repository.getExisted(id), id);
         return ResponseEntity.of(repository.getWithDishes(id));
     }
 

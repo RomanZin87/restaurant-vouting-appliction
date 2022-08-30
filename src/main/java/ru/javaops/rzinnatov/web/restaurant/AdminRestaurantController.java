@@ -15,8 +15,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
-import static ru.javaops.rzinnatov.util.validation.ValidationUtil.assureIdConsistent;
-import static ru.javaops.rzinnatov.util.validation.ValidationUtil.checkNew;
+import static ru.javaops.rzinnatov.util.validation.ValidationUtil.*;
 
 @RestController
 @Slf4j
@@ -34,6 +33,8 @@ public class AdminRestaurantController extends AbstractRestaurantController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Restaurant> get(@PathVariable int id) {
+        log.info("get restaurant {}", id);
+        checkExisted(repository.getExisted(id), id);
         return ResponseEntity.of(repository.findById(id));
     }
 
@@ -53,6 +54,7 @@ public class AdminRestaurantController extends AbstractRestaurantController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @CacheEvict(allEntries = true)
     public void delete(@PathVariable int id) {
+        checkExisted(repository.getExisted(id), id);
         repository.delete(id);
     }
 
@@ -72,6 +74,7 @@ public class AdminRestaurantController extends AbstractRestaurantController {
     @CacheEvict(allEntries = true)
     public void update(@Valid @RequestBody Restaurant restaurant, @PathVariable int id) {
         log.info("update {} with id {}", restaurant, id);
+        checkExisted(repository.getExisted(id), id);
         assureIdConsistent(restaurant, id);
         repository.save(restaurant);
     }

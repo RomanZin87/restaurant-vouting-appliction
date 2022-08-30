@@ -12,14 +12,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.javaops.rzinnatov.model.Dish;
 import ru.javaops.rzinnatov.repository.DishRepository;
-import ru.javaops.rzinnatov.service.DishService;
+import ru.javaops.rzinnatov.repository.RestaurantRepository;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
-import static ru.javaops.rzinnatov.util.validation.ValidationUtil.assureIdConsistent;
-import static ru.javaops.rzinnatov.util.validation.ValidationUtil.checkNew;
+import static ru.javaops.rzinnatov.util.validation.ValidationUtil.*;
 
 @Slf4j
 @RestController
@@ -29,11 +28,12 @@ import static ru.javaops.rzinnatov.util.validation.ValidationUtil.checkNew;
 public class AdminDishController {
     public static final String REST_URL = "/api/admin/restaurant/{restaurantId}/dish";
     private final DishRepository dishRepository;
-    private final DishService dishService;
+    private final RestaurantRepository restaurantRepository;
 
     @GetMapping("/{id}")
     public ResponseEntity<Dish> get(@PathVariable int id, @PathVariable int restaurantId) {
         log.info("get dish {} for restaurant {}", id, restaurantId);
+        dishRepository.checkBelong(id, restaurantId);
         return ResponseEntity.of(dishRepository.get(id, restaurantId));
     }
 
@@ -41,6 +41,7 @@ public class AdminDishController {
     @Cacheable
     public List<Dish> getAll(@PathVariable int restaurantId) {
         log.info("getAll for restaurant {}", restaurantId);
+        checkExisted(restaurantRepository.getExisted(restaurantId), restaurantId);
         return dishRepository.getAll(restaurantId);
     }
 
@@ -58,7 +59,8 @@ public class AdminDishController {
     public ResponseEntity<Dish> createWithLocation(@Valid @RequestBody Dish dish, @PathVariable int restaurantId) {
         log.info("create dish {} for restaurant {}", dish, restaurantId);
         checkNew(dish);
-        Dish created = dishService.save(dish, restaurantId);
+        dish.setRestaurant(restaurantRepository.getExisted(restaurantId));
+        Dish created = dishRepository.save(dish);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(restaurantId, created.getId()).toUri();
@@ -72,6 +74,7 @@ public class AdminDishController {
         log.info("update {} for restaurant {}", dish, restaurantId);
         assureIdConsistent(dish, id);
         dishRepository.checkBelong(id, restaurantId);
-        dishService.save(dish, restaurantId);
+        dish.setRestaurant(restaurantRepository.getExisted(restaurantId));
+        dishRepository.save(dish);
     }
 }
