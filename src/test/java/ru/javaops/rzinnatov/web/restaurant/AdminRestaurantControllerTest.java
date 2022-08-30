@@ -146,5 +146,4 @@ class AdminRestaurantControllerTest extends AbstractControllerTest {
                 .andExpect(status().isUnprocessableEntity())
                 .andDo(print());
     }
-
 }

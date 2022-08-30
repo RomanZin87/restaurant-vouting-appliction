@@ -1,6 +1,9 @@
 package ru.javaops.rzinnatov.web.restaurant;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +20,14 @@ import static ru.javaops.rzinnatov.util.validation.ValidationUtil.checkNew;
 
 @RestController
 @Slf4j
+@CacheConfig(cacheNames = "restaurants")
 @RequestMapping(value = AdminRestaurantController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class AdminRestaurantController extends AbstractRestaurantController {
     static final String REST_URL = "/api/admin/restaurant";
 
     @Override
     @GetMapping
+    @Cacheable
     public List<Restaurant> getAll() {
         return super.getAll();
     }
@@ -46,6 +51,7 @@ public class AdminRestaurantController extends AbstractRestaurantController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @CacheEvict(allEntries = true)
     public void delete(@PathVariable int id) {
         repository.delete(id);
     }
@@ -63,6 +69,7 @@ public class AdminRestaurantController extends AbstractRestaurantController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @CacheEvict(allEntries = true)
     public void update(@Valid @RequestBody Restaurant restaurant, @PathVariable int id) {
         log.info("update {} with id {}", restaurant, id);
         assureIdConsistent(restaurant, id);

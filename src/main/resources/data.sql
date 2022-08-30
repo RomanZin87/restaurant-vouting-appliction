@@ -28,7 +28,5 @@ VALUES ('Маргарита', 500, 1),
        ('Смазженина с овощами', 550, 3);
 
 INSERT INTO VOTE (restaurant_id, user_id)
-VALUES (1, 1),
-       (2, 2),
-       (3, 3),
+VALUES (3, 3),
        (2, 4);

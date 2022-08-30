@@ -17,7 +17,7 @@ import java.time.LocalDate;
 @ToString(callSuper = true, exclude = {"restaurant"})
 public class Dish extends NamedEntity {
 
-    @ManyToOne(fetch= FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "restaurant_id", nullable = false)
     private Restaurant restaurant;

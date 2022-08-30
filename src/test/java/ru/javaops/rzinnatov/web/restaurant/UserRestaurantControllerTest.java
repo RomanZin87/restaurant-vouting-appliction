@@ -4,16 +4,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.javaops.rzinnatov.repository.RestaurantRepository;
 import ru.javaops.rzinnatov.web.AbstractControllerTest;
 
-import static ru.javaops.rzinnatov.web.user.UserTestData.USER_MAIL;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ru.javaops.rzinnatov.web.restaurant.RestaurantTestData.*;
+import static ru.javaops.rzinnatov.web.restaurant.RestaurantTestData.PIZZERIA_ID;
+import static ru.javaops.rzinnatov.web.user.UserTestData.USER_MAIL;
 
 
 class UserRestaurantControllerTest extends AbstractControllerTest {

@@ -2,6 +2,9 @@ package ru.javaops.rzinnatov.web.dish;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,16 +18,16 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
-import static ru.javaops.rzinnatov.util.validation.ValidationUtil.checkNew;
 import static ru.javaops.rzinnatov.util.validation.ValidationUtil.assureIdConsistent;
+import static ru.javaops.rzinnatov.util.validation.ValidationUtil.checkNew;
 
 @Slf4j
 @RestController
 @AllArgsConstructor
+@CacheConfig(cacheNames = "dishes")
 @RequestMapping(value = AdminDishController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class AdminDishController {
     public static final String REST_URL = "/api/admin/restaurant/{restaurantId}/dish";
-
     private final DishRepository dishRepository;
     private final DishService dishService;
 
@@ -35,12 +38,14 @@ public class AdminDishController {
     }
 
     @GetMapping
+    @Cacheable
     public List<Dish> getAll(@PathVariable int restaurantId) {
         log.info("getAll for restaurant {}", restaurantId);
         return dishRepository.getAll(restaurantId);
     }
 
     @DeleteMapping("/{id}")
+    @CacheEvict(allEntries = true)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id, @PathVariable int restaurantId) {
         log.info("delete dish {} for restaurant {}", id, restaurantId);
@@ -49,7 +54,8 @@ public class AdminDishController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<Dish> createWithLocation(@Valid @RequestBody Dish dish, @PathVariable int restaurantId) {
+    @CacheEvict(allEntries = true)
+    public ResponseEntity<Dish> createWithLocation(@Valid @RequestBody Dish dish, @PathVariable int restaurantId) {
         log.info("create dish {} for restaurant {}", dish, restaurantId);
         checkNew(dish);
         Dish created = dishService.save(dish, restaurantId);
@@ -61,6 +67,7 @@ public class AdminDishController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @CacheEvict(allEntries = true)
     public void update(@PathVariable int restaurantId, @PathVariable int id, @Valid @RequestBody Dish dish) {
         log.info("update {} for restaurant {}", dish, restaurantId);
         assureIdConsistent(dish, id);

@@ -1,10 +1,7 @@
 package ru.javaops.rzinnatov.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,6 +14,7 @@ import java.time.LocalTime;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString(callSuper = true, exclude = {"voteTime"})
 @Table(name = "vote", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id"}, name = "vote_unique_user_idx")})
 public class Vote extends BaseEntity {
 
@@ -32,4 +30,11 @@ public class Vote extends BaseEntity {
     @NotNull
     @Schema(hidden = true)
     LocalTime voteTime = LocalTime.now();
+
+    public Vote(Integer id, Integer restaurantId, Integer userId, LocalTime voteTime) {
+        super(id);
+        this.restaurantId = restaurantId;
+        this.userId = userId;
+        this.voteTime = voteTime;
+    }
 }

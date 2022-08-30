@@ -4,18 +4,21 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.javaops.rzinnatov.error.LateVoteException;
 import ru.javaops.rzinnatov.model.Vote;
 import ru.javaops.rzinnatov.repository.VoteRepository;
 import ru.javaops.rzinnatov.web.AuthUser;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.time.LocalTime;
 import java.util.List;
 
-import static ru.javaops.rzinnatov.util.validation.ValidationUtil.*;
+import static ru.javaops.rzinnatov.util.validation.ValidationUtil.checkNew;
 
 @Slf4j
 @RestController
@@ -24,20 +27,24 @@ import static ru.javaops.rzinnatov.util.validation.ValidationUtil.*;
 public class VoteController {
     public static final String REST_URL = "/api/vote";
     public static final LocalTime VOTE_DEADLINE = LocalTime.of(11, 0);
-
     private final VoteRepository repository;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void vote(@AuthenticationPrincipal AuthUser authUser, @RequestBody @Valid Vote vote) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<Vote> vote(@AuthenticationPrincipal AuthUser authUser, @RequestBody @Valid Vote vote) {
         int userId = authUser.id();
         vote.setUserId(userId);
         log.info("user {} vote for restaurant {}", userId, vote.getRestaurantId());
         checkNew(vote);
         checkToLateVote(vote);
-        repository.save(vote);
+        Vote created = repository.save(vote);
+        URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path(REST_URL).build().toUri();
+        return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void reVote(@AuthenticationPrincipal AuthUser authUser, @RequestBody @Valid Vote vote) {
         int userId = authUser.id();
         log.info("user {} revote for restaurant {}", userId, vote.getRestaurantId());

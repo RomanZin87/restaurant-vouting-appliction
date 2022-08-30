@@ -16,4 +16,6 @@ public interface VoteRepository extends BaseRepository<Vote> {
 
     @Query("select v.restaurantId, count(v.restaurantId) from Vote v group by v.restaurantId")
     List<Object[]> searchCustom();
+
+    Vote findByUserId(int userId);
 }

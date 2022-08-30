@@ -23,10 +23,8 @@ import static ru.javaops.rzinnatov.util.validation.ValidationUtil.checkNew;
 @RestController
 @RequestMapping(value = AdminUserController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
-// TODO: cache only most requested data!
 @CacheConfig(cacheNames = "users")
 public class AdminUserController extends AbstractUserController {
-
     static final String REST_URL = "/api/admin/users";
 
     @Override

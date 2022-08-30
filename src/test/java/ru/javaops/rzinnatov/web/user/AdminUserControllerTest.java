@@ -22,7 +22,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static ru.javaops.rzinnatov.web.user.UserTestData.*;
 
 class AdminUserControllerTest extends AbstractControllerTest {
-
     private static final String REST_URL = AdminUserController.REST_URL + '/';
 
     @Autowired

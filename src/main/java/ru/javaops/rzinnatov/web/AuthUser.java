@@ -8,7 +8,6 @@ import ru.javaops.rzinnatov.model.User;
 @Getter
 @ToString(of = "user")
 public class AuthUser extends org.springframework.security.core.userdetails.User {
-
     private final User user;
 
     public AuthUser(@NonNull User user) {

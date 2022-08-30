@@ -23,7 +23,6 @@ class AdminDishControllerTest extends AbstractControllerTest {
 
     public static final String REST_URL = "/api/admin/restaurant/";
 
-
     @Autowired
     DishRepository dishRepository;
 
@@ -71,7 +70,6 @@ class AdminDishControllerTest extends AbstractControllerTest {
         newDish.setId(created.id());
         DISH_MATCHER.assertMatch(created, newDish);
         DISH_MATCHER.assertMatch(dishRepository.getExisted(created.id()), newDish);
-
     }
 
     @Test
