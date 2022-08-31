@@ -20,16 +20,16 @@ public class Vote extends BaseEntity {
 
     @Column(name = "restaurant_id", nullable = false)
     @NotNull
-    Integer restaurantId;
+    private Integer restaurantId;
 
     @Column(name = "user_id", nullable = false)
     @Schema(hidden = true)
-    Integer userId;
+    private Integer userId;
 
     @Column(name = "vote_time", nullable = false, columnDefinition = "timestamp default now()")
     @NotNull
     @Schema(hidden = true)
-    LocalTime voteTime = LocalTime.now();
+    private LocalTime voteTime = LocalTime.now();
 
     public Vote(Integer id, Integer restaurantId, Integer userId, LocalTime voteTime) {
         super(id);
