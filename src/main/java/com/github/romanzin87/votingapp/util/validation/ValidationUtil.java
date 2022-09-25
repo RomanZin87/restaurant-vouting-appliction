@@ -37,6 +37,7 @@ public class ValidationUtil {
         return obj;
     }
 
+
     public static <T> void checkExistedByEmail(T obj, String email) {
         if (obj == null) {
             throw new IllegalRequestDataException("Entity with email=" + email + " not found");

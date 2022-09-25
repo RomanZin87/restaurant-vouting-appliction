@@ -19,6 +19,6 @@ public interface DishRepository extends BaseRepository<Dish> {
 
     default Dish checkBelong(int id, int restaurantId) {
         return get(id, restaurantId).orElseThrow(
-                () -> new DataConflictException("Dish id=" + id + " doesn't belong to Restaurant id=" + restaurantId));
+                () -> new DataConflictException("Dish with id=" + id + " doesn't belong to Restaurant with id=" + restaurantId));
     }
 }

@@ -1,6 +1,7 @@
 package com.github.romanzin87.votingapp.web.vote;
 
 import com.github.romanzin87.votingapp.error.LateVoteException;
+import com.github.romanzin87.votingapp.service.VoteService;
 import com.github.romanzin87.votingapp.util.validation.ValidationUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import com.github.romanzin87.votingapp.web.AuthUser;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -25,32 +27,25 @@ import java.util.List;
 @RequestMapping(value = VoteController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class VoteController {
     public static final String REST_URL = "/api/vote";
-    public static final LocalTime VOTE_DEADLINE = LocalTime.of(11, 0);
-    private final VoteRepository repository;
+    private final VoteService service;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Vote> vote(@AuthenticationPrincipal AuthUser authUser, @RequestBody @Valid Vote vote) {
+    public ResponseEntity<Vote> vote(@AuthenticationPrincipal AuthUser authUser, @RequestParam int restaurantId) {
         int userId = authUser.id();
-        vote.setUserId(userId);
-        log.info("user {} vote for restaurant {}", userId, vote.getRestaurantId());
-        ValidationUtil.checkNew(vote);
-        checkToLateVote(vote);
-        Vote created = repository.save(vote);
+        log.info("user {} vote for restaurant {}", userId, restaurantId);
+        Vote created = service.create(restaurantId, userId, LocalDateTime.now());
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL).build().toUri();
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
-    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void reVote(@AuthenticationPrincipal AuthUser authUser, @RequestBody @Valid Vote vote) {
+    public void reVote(@AuthenticationPrincipal AuthUser authUser, @PathVariable int id, @RequestParam int restaurantId) {
         int userId = authUser.id();
-        log.info("user {} revote for restaurant {}", userId, vote.getRestaurantId());
-        checkToLateVote(vote);
-        repository.delete(userId);
-        vote.setUserId(userId);
-        repository.save(vote);
+        log.info("user {} revote for restaurant {}", userId, restaurantId);
+        service.update(id, userId, restaurantId, LocalDateTime.now());
     }
 
     @DeleteMapping()
@@ -58,24 +53,13 @@ public class VoteController {
     public void unVote(@AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
         log.info("user {} cancel the vote", userId);
-        repository.delete(userId);
-    }
-
-    @GetMapping("/{restaurantId}")
-    public Integer checkResults(@AuthenticationPrincipal AuthUser authUser, @PathVariable int restaurantId) {
-        log.info("checking vote counts for restaurant {}", restaurantId);
-        return repository.countVotesByRestaurantId(restaurantId);
+        service.delete(userId);
     }
 
     @GetMapping("/statistic")
     public List<Object[]> checkResults(@AuthenticationPrincipal AuthUser authUser) {
         log.info("checking vote results");
-        return repository.searchCustom();
+        return service.checkStatistic();
     }
 
-    private static void checkToLateVote(Vote vote) {
-        if (vote.getVoteTime().isAfter(VOTE_DEADLINE)) {
-            throw new LateVoteException("All votes are accepted until 11:00. It's too late to vote");
-        }
-    }
 }

@@ -30,14 +30,18 @@ public class AbstractRestaurantController {
                 .collect(Collectors.toList());
     }
 
+    public ResponseEntity<Restaurant> get(int id) {
+        log.info("get restaurant {}", id);
+        return ResponseEntity.of(checkExisted(repository.findById(id), id));
+    }
+
     public ResponseEntity<Restaurant> getWithDishes(int id, LocalDate inMenuDate) {
-        log.info("getWithDishes {}", id);
-        checkExisted(repository.getExisted(id), id);
+        log.info("getWithDishes for restaurant {} and date {}", id, inMenuDate);
         return ResponseEntity.of(repository.getWithDishes(id, inMenuDate));
     }
 
     public List<Restaurant> getAllWithDishes(LocalDate inMenuDate) {
-        log.info("getAllWithDishes");
+        log.info("getAllWithDishes on date {}", inMenuDate);
         return repository.getAllWithDishes(inMenuDate);
     }
 }

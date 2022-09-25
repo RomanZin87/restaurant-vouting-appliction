@@ -9,13 +9,15 @@ import java.util.List;
 @Transactional(readOnly = true)
 public interface VoteRepository extends BaseRepository<Vote> {
 
-    @Query("DELETE FROM Vote v WHERE v.userId = :userId")
+    @Query("DELETE FROM Vote v WHERE v.user.id = :userId")
     int delete(int userId);
 
     int countVotesByRestaurantId(Integer restaurantId);
 
-    @Query("select v.restaurantId, count(v.restaurantId) from Vote v group by v.restaurantId")
-    List<Object[]> searchCustom();
+    @Query("select v.restaurant, count(v.restaurant) from Vote v group by v.restaurant")
+    List<Object[]> checkStatistic();
 
     Vote findByUserId(int userId);
+
+    void deleteByUserId(int userId);
 }

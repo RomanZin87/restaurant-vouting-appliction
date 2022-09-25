@@ -18,7 +18,7 @@ import java.util.List;
 @CacheConfig(cacheNames = "restaurants")
 @RequestMapping(value = UserRestaurantController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserRestaurantController extends AbstractRestaurantController {
-    static final String REST_URL = "/api/restaurant";
+    static final String REST_URL = "/api/restaurants";
     public static final LocalDate TODAY_MENU_DATE = LocalDate.now();
 
     @Override
@@ -28,15 +28,18 @@ public class UserRestaurantController extends AbstractRestaurantController {
         return super.getAll();
     }
 
-    @Override
+    @GetMapping("/{id}")
+    public ResponseEntity<Restaurant> get(@PathVariable int id) {
+        return super.get(id);
+    }
+
     @GetMapping("{id}/with-dishes/")
-    public ResponseEntity<Restaurant> getWithDishes(@PathVariable int id, LocalDate inMenuDate) {
+    public ResponseEntity<Restaurant> getWithDishes(@PathVariable int id) {
         return super.getWithDishes(id, TODAY_MENU_DATE);
     }
 
-    @Override
     @GetMapping("/with-dishes")
-    public List<Restaurant> getAllWithDishes(LocalDate inMenuDate) {
+    public List<Restaurant> getAllWithDishes() {
         return super.getAllWithDishes(TODAY_MENU_DATE);
     }
 }
