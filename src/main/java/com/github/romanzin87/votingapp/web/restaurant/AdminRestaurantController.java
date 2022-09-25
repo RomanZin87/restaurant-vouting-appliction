@@ -1,5 +1,7 @@
 package com.github.romanzin87.votingapp.web.restaurant;
 
+import com.github.romanzin87.votingapp.model.Restaurant;
+import com.github.romanzin87.votingapp.to.RestaurantTo;
 import com.github.romanzin87.votingapp.util.validation.ValidationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
@@ -10,10 +12,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import com.github.romanzin87.votingapp.model.Restaurant;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -26,7 +28,7 @@ public class AdminRestaurantController extends AbstractRestaurantController {
     @Override
     @GetMapping
     @Cacheable
-    public List<Restaurant> getAll() {
+    public List<RestaurantTo> getAll() {
         return super.getAll();
     }
 
@@ -38,15 +40,15 @@ public class AdminRestaurantController extends AbstractRestaurantController {
     }
 
     @Override
-    @GetMapping("/with-dishes/{id}")
-    public ResponseEntity<Restaurant> getWithDishes(@PathVariable int id) {
-        return super.getWithDishes(id);
+    @GetMapping("{id}/with-dishes/")
+    public ResponseEntity<Restaurant> getWithDishes(@PathVariable int id, @RequestParam LocalDate inMenuDate) {
+        return super.getWithDishes(id, inMenuDate);
     }
 
     @Override
     @GetMapping("/with-dishes")
-    public List<Restaurant> getAllWithDishes() {
-        return super.getAllWithDishes();
+    public List<Restaurant> getAllWithDishes(@RequestParam LocalDate inMenuDate) {
+        return super.getAllWithDishes(inMenuDate);
     }
 
     @DeleteMapping("/{id}")
