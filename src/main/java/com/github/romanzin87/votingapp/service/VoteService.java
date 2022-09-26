@@ -1,5 +1,6 @@
 package com.github.romanzin87.votingapp.service;
 
+import com.github.romanzin87.votingapp.error.IllegalRequestDataException;
 import com.github.romanzin87.votingapp.error.LateVoteException;
 import com.github.romanzin87.votingapp.model.Vote;
 import com.github.romanzin87.votingapp.repository.RestaurantRepository;
@@ -8,12 +9,12 @@ import com.github.romanzin87.votingapp.repository.VoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
-
-import static com.github.romanzin87.votingapp.util.validation.ValidationUtil.checkExisted;
-import static com.github.romanzin87.votingapp.util.validation.ValidationUtil.checkNew;
+import java.util.Optional;
 
 @Service
 public class VoteService {
@@ -29,30 +30,54 @@ public class VoteService {
     }
 
     @Transactional
-    public Vote create(int userId, int restaurantId, LocalDateTime voteTime) {
-        checkNew(voteRepository.findByUserId(userId));
-        return voteRepository.save(new Vote(userRepository.get(userId), restaurantRepository.get(restaurantId)));
+    public void vote(int userId, int restaurantId) throws LateVoteException {
+        Vote vote = getByUser(userId, LocalDate.now());
+        if (vote == null) {
+            save(userId, restaurantId);
+        } else {
+            checkToLateVote(LocalTime.now());
+            update(vote, userId, restaurantId);
+        }
     }
 
-    @Transactional
-    public void update(int id, int userId, int restaurantId, LocalDateTime voteTime) {
-        checkExisted(voteRepository.get(id), id);
-        checkToLateVote(voteTime);
-        voteRepository.save(new Vote(id, userRepository.get(userId), restaurantRepository.get(restaurantId)));
+    public List<Object[]> checkStatistic(LocalDate date) {
+        return voteRepository.checkStatistic(date);
     }
 
+    private Vote getByUser(int userId, LocalDate date) {
+        return voteRepository.findByUserIdAndVoteDate(userId, date).orElse(null);
+    }
 
-    private static void checkToLateVote(LocalDateTime voteTime) {
-        if (voteTime.toLocalTime().isAfter(Vote.VOTE_DEADLINE)) {
+    public Vote getByUserOrElseThrowException(int userId, LocalDate date) {
+        return voteRepository.findByUserIdAndVoteDate(userId, date)
+                .orElseThrow(() -> new IllegalRequestDataException("There are no votes for user " + userId + " on date " + date));
+    }
+
+    public List<Vote> getAllByUserOrElseThrowException(int userId) {
+        Optional<List<Vote>> allByUserId = voteRepository.findAllByUserId(userId);
+        if (allByUserId.get().isEmpty()) {
+            throw new IllegalRequestDataException("There are no votes for user");
+        } else return allByUserId.get();
+    }
+
+    private static void checkToLateVote(LocalTime voteTime) {
+        if (voteTime.isAfter(Vote.VOTE_DEADLINE)) {
             throw new LateVoteException("All votes are accepted until 11:00. It's too late to vote");
         }
     }
 
-    public void delete(int userId) {
-        voteRepository.deleteByUserId(userId);
+    private void save(int userId, int restaurantId) {
+        Vote vote = new Vote();
+        vote.setUser(userRepository.get(userId));
+        vote.setRestaurant(restaurantRepository.get(restaurantId));
+        voteRepository.save(vote);
     }
 
-    public List<Object[]> checkStatistic() {
-        return voteRepository.checkStatistic();
+    private void update(Vote vote, int userId, int restaurantId) {
+        vote.setUser(userRepository.get(userId));
+        vote.setRestaurant(restaurantRepository.get(restaurantId));
+        voteRepository.save(vote);
     }
+
+
 }

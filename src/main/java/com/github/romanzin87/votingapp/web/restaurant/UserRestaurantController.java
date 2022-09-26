@@ -29,7 +29,7 @@ public class UserRestaurantController extends AbstractRestaurantController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Restaurant> get(@PathVariable int id) {
+    public ResponseEntity<RestaurantTo> get(@PathVariable int id) {
         return super.get(id);
     }
 

@@ -35,7 +35,7 @@ public class AdminRestaurantController extends AbstractRestaurantController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Restaurant> get(@PathVariable int id) {
+    public ResponseEntity<RestaurantTo> get(@PathVariable int id) {
         return super.get(id);
     }
 
@@ -60,6 +60,7 @@ public class AdminRestaurantController extends AbstractRestaurantController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @CacheEvict(allEntries = true)
     public ResponseEntity<Restaurant> createWithLocation(@Valid @RequestBody Restaurant restaurant) {
         log.info("create {}", restaurant);
         checkNew(restaurant);
@@ -76,8 +77,6 @@ public class AdminRestaurantController extends AbstractRestaurantController {
     @Transactional
     public void update(@Valid @RequestBody Restaurant restaurant, @PathVariable int id) {
         log.info("update {} with id {}", restaurant, id);
-        assureIdConsistent(restaurant, id);
-        checkExisted(repository.findById(id), id);
-        repository.save(restaurant);
+        checkNotFoundWithId(repository.save(restaurant), id);
     }
 }

@@ -4,20 +4,19 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 import com.github.romanzin87.votingapp.model.Vote;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Transactional(readOnly = true)
 public interface VoteRepository extends BaseRepository<Vote> {
 
-    @Query("DELETE FROM Vote v WHERE v.user.id = :userId")
-    int delete(int userId);
-
     int countVotesByRestaurantId(Integer restaurantId);
 
-    @Query("select v.restaurant, count(v.restaurant) from Vote v group by v.restaurant")
-    List<Object[]> checkStatistic();
+    @Query("select v.restaurant, count(v.restaurant) from Vote v where v.voteDate=:date group by v.restaurant")
+    List<Object[]> checkStatistic(LocalDate date);
 
-    Vote findByUserId(int userId);
+    Optional<Vote> findByUserIdAndVoteDate(int userId, LocalDate date);
 
-    void deleteByUserId(int userId);
+    Optional<List<Vote>> findAllByUserId(int userId);
 }

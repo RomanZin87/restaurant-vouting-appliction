@@ -1,24 +1,17 @@
 package com.github.romanzin87.votingapp.web.vote;
 
-import com.github.romanzin87.votingapp.error.LateVoteException;
+import com.github.romanzin87.votingapp.model.Vote;
 import com.github.romanzin87.votingapp.service.VoteService;
-import com.github.romanzin87.votingapp.util.validation.ValidationUtil;
+import com.github.romanzin87.votingapp.web.AuthUser;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import com.github.romanzin87.votingapp.model.Vote;
-import com.github.romanzin87.votingapp.repository.VoteRepository;
-import com.github.romanzin87.votingapp.web.AuthUser;
 
-import javax.validation.Valid;
-import java.net.URI;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -26,40 +19,36 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping(value = VoteController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class VoteController {
-    public static final String REST_URL = "/api/vote";
+    public static final String REST_URL = "/api";
     private final VoteService service;
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Vote> vote(@AuthenticationPrincipal AuthUser authUser, @RequestParam int restaurantId) {
+    @Transactional
+    @PostMapping("/vote")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void vote(@AuthenticationPrincipal AuthUser authUser, @RequestParam int restaurantId) {
         int userId = authUser.id();
         log.info("user {} vote for restaurant {}", userId, restaurantId);
-        Vote created = service.create(restaurantId, userId, LocalDateTime.now());
-        URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path(REST_URL).build().toUri();
-        return ResponseEntity.created(uriOfNewResource).body(created);
+        service.vote(userId, restaurantId);
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void reVote(@AuthenticationPrincipal AuthUser authUser, @PathVariable int id, @RequestParam int restaurantId) {
+    @GetMapping("/vote-statistics")
+    public List<Object[]> checkStatistic(@AuthenticationPrincipal AuthUser authUser, @RequestParam LocalDate date) {
+        log.info("checking vote results on date: {}", date);
+        return service.checkStatistic(date);
+    }
+
+    @GetMapping("/vote-for-date")
+    public Vote get(@AuthenticationPrincipal AuthUser authUser, @RequestParam LocalDate date) {
         int userId = authUser.id();
-        log.info("user {} revote for restaurant {}", userId, restaurantId);
-        service.update(id, userId, restaurantId, LocalDateTime.now());
+        log.info("user {} checks his vote on date: {}", userId, date);
+        return service.getByUserOrElseThrowException(userId, date);
     }
 
-    @DeleteMapping()
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void unVote(@AuthenticationPrincipal AuthUser authUser) {
+    @GetMapping("/vote-history")
+    public List<Vote> get(@AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
-        log.info("user {} cancel the vote", userId);
-        service.delete(userId);
-    }
-
-    @GetMapping("/statistic")
-    public List<Object[]> checkResults(@AuthenticationPrincipal AuthUser authUser) {
-        log.info("checking vote results");
-        return service.checkStatistic();
+        log.info("user {} checks his vote history", userId);
+        return service.getAllByUserOrElseThrowException(userId);
     }
 
 }

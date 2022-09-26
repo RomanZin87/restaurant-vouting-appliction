@@ -43,6 +43,25 @@ public class ValidationUtil {
             throw new IllegalRequestDataException("Entity with email=" + email + " not found");
         }
     }
+    public static void checkNotFoundWithId(boolean found, int id) {
+        checkNotFound(found, "id=" + id);
+    }
+
+    public static <T> T checkNotFoundWithId(T object, int id) {
+        return checkNotFound(object, "id=" + id);
+    }
+
+    public static <T> T checkNotFound(T object, String msg) {
+        checkNotFound(object != null, msg);
+        return object;
+    }
+
+    public static void checkNotFound(boolean found, String msg) {
+        if (!found) {
+            throw new IllegalRequestDataException("Not found entity with " + msg);
+        }
+    }
+
 
     //  https://stackoverflow.com/a/65442410/548473
     @NonNull
