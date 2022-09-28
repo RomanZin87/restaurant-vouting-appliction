@@ -43,9 +43,10 @@ public class AdminDishController {
 
     @GetMapping
     @Cacheable
+    @Transactional
     public List<Dish> getAll(@PathVariable int restaurantId) {
         log.info("getAll for restaurant {}", restaurantId);
-        checkExisted(em.getReference(Restaurant.class, restaurantId), restaurantId);
+        checkExisted(restaurantRepository.getExisted(restaurantId), restaurantId);
         return dishRepository.getAll(restaurantId);
     }
 

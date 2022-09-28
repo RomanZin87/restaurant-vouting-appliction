@@ -1,18 +1,18 @@
 package com.github.romanzin87.votingapp.web.restaurant;
 
+import com.github.romanzin87.votingapp.repository.RestaurantRepository;
+import com.github.romanzin87.votingapp.web.AbstractControllerTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import com.github.romanzin87.votingapp.repository.RestaurantRepository;
-import com.github.romanzin87.votingapp.web.AbstractControllerTest;
 
+import static com.github.romanzin87.votingapp.web.restaurant.RestaurantTestData.*;
+import static com.github.romanzin87.votingapp.web.user.UserTestData.USER_MAIL;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static com.github.romanzin87.votingapp.web.restaurant.RestaurantTestData.PIZZERIA_ID;
-import static com.github.romanzin87.votingapp.web.user.UserTestData.USER_MAIL;
 
 
 class UserRestaurantControllerTest extends AbstractControllerTest {
@@ -27,25 +27,18 @@ class UserRestaurantControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.get(REST_URL))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andDo(print());
+                .andDo(print())
+                .andExpect(RESTAURANT_MATCHER.contentJson(allRestaurants));
     }
 
     @Test
     @WithUserDetails(USER_MAIL)
-    void getAllWithDishes() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + "with-dishes"))
+    void get() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + HALVA_ID))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andDo(print());
-    }
-
-    @Test
-    @WithUserDetails(USER_MAIL)
-    void getWithDishes() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + "with-dishes/" + PIZZERIA_ID))
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andDo(print());
+                .andDo(print())
+                .andExpect(RESTAURANT_MATCHER.contentJson(HALVA));
     }
 
     @Test

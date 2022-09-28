@@ -1,14 +1,12 @@
 package com.github.romanzin87.votingapp.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.hibernate.validator.constraints.Range;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.nio.file.LinkOption;
 import java.time.LocalDate;
 
 @Entity
@@ -27,6 +25,7 @@ public class Dish extends NamedEntity {
 
     @Column(name = "in_menu_date", nullable = false)
     @NotNull
+    @Schema(type = "String", format = "yyyy-MM-dd", pattern = "([0-9]{4})-(?:[0-9]{2})-([0-9]{2})", required = true)
     private LocalDate inMenuDate;
 
     @Column(name = "price", nullable = false)
@@ -36,7 +35,7 @@ public class Dish extends NamedEntity {
 
     public Dish(Integer id, String name, double price, LocalDate inMenuDate) {
         super(id, name);
-        this.inMenuDate = inMenuDate;
         this.price = price;
+        this.inMenuDate = inMenuDate;
     }
 }

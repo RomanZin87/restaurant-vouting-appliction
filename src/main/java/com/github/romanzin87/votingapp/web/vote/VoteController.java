@@ -5,13 +5,18 @@ import com.github.romanzin87.votingapp.service.VoteService;
 import com.github.romanzin87.votingapp.web.AuthUser;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -23,22 +28,26 @@ public class VoteController {
     private final VoteService service;
 
     @Transactional
-    @PostMapping("/vote")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void vote(@AuthenticationPrincipal AuthUser authUser, @RequestParam int restaurantId) {
+    @PostMapping(value = "/vote")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<Vote> createWithLocation(@AuthenticationPrincipal AuthUser authUser, @RequestParam int restaurantId) {
         int userId = authUser.id();
         log.info("user {} vote for restaurant {}", userId, restaurantId);
-        service.vote(userId, restaurantId);
+        Vote created = service.vote(userId, restaurantId);
+        URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path(REST_URL + "/{id}")
+                .buildAndExpand(restaurantId, created.getId()).toUri();
+        return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
     @GetMapping("/vote-statistics")
-    public List<Object[]> checkStatistic(@AuthenticationPrincipal AuthUser authUser, @RequestParam LocalDate date) {
+    public List<Object[]> checkStatistic(@AuthenticationPrincipal AuthUser authUser, @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         log.info("checking vote results on date: {}", date);
         return service.checkStatistic(date);
     }
 
     @GetMapping("/vote-for-date")
-    public Vote get(@AuthenticationPrincipal AuthUser authUser, @RequestParam LocalDate date) {
+    public Vote get(@AuthenticationPrincipal AuthUser authUser, @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         int userId = authUser.id();
         log.info("user {} checks his vote on date: {}", userId, date);
         return service.getByUserOrElseThrowException(userId, date);

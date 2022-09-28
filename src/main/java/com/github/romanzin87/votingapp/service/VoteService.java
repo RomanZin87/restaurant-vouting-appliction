@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -30,13 +31,13 @@ public class VoteService {
     }
 
     @Transactional
-    public void vote(int userId, int restaurantId) throws LateVoteException {
+    public Vote vote(int userId, int restaurantId) throws LateVoteException {
         Vote vote = getByUser(userId, LocalDate.now());
         if (vote == null) {
-            save(userId, restaurantId);
+            return save(userId, restaurantId);
         } else {
             checkToLateVote(LocalTime.now());
-            update(vote, userId, restaurantId);
+            return update(vote, userId, restaurantId);
         }
     }
 
@@ -66,17 +67,17 @@ public class VoteService {
         }
     }
 
-    private void save(int userId, int restaurantId) {
+    private Vote save(int userId, int restaurantId) {
         Vote vote = new Vote();
         vote.setUser(userRepository.get(userId));
         vote.setRestaurant(restaurantRepository.get(restaurantId));
-        voteRepository.save(vote);
+        return voteRepository.save(vote);
     }
 
-    private void update(Vote vote, int userId, int restaurantId) {
+    private Vote update(Vote vote, int userId, int restaurantId) {
         vote.setUser(userRepository.get(userId));
         vote.setRestaurant(restaurantRepository.get(restaurantId));
-        voteRepository.save(vote);
+        return voteRepository.save(vote);
     }
 
 

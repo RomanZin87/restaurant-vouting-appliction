@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -41,13 +42,13 @@ public class AdminRestaurantController extends AbstractRestaurantController {
 
     @Override
     @GetMapping("{id}/with-dishes/")
-    public ResponseEntity<Restaurant> getWithDishes(@PathVariable int id, @RequestParam LocalDate inMenuDate) {
+    public ResponseEntity<Restaurant> getWithDishes(@PathVariable int id, @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate inMenuDate) {
         return super.getWithDishes(id, inMenuDate);
     }
 
     @Override
     @GetMapping("/with-dishes")
-    public List<Restaurant> getAllWithDishes(@RequestParam LocalDate inMenuDate) {
+    public List<Restaurant> getAllWithDishes(@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate inMenuDate) {
         return super.getAllWithDishes(inMenuDate);
     }
 
@@ -77,6 +78,7 @@ public class AdminRestaurantController extends AbstractRestaurantController {
     @Transactional
     public void update(@Valid @RequestBody Restaurant restaurant, @PathVariable int id) {
         log.info("update {} with id {}", restaurant, id);
-        checkNotFoundWithId(repository.save(restaurant), id);
+        Restaurant updated = repository.getExisted(id);
+        updated.setName(restaurant.getName());
     }
 }

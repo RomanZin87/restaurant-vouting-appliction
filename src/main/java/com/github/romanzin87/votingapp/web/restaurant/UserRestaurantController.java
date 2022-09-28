@@ -4,6 +4,7 @@ import com.github.romanzin87.votingapp.model.Restaurant;
 import com.github.romanzin87.votingapp.to.RestaurantTo;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,12 +35,12 @@ public class UserRestaurantController extends AbstractRestaurantController {
     }
 
     @GetMapping("{id}/with-dishes/")
-    public ResponseEntity<Restaurant> getWithDishes(@PathVariable int id) {
+    public ResponseEntity<Restaurant> getWithDishes(@PathVariable int id, @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate inMenuDate) {
         return super.getWithDishes(id, TODAY_MENU_DATE);
     }
 
     @GetMapping("/with-dishes")
-    public List<Restaurant> getAllWithDishes() {
+    public List<Restaurant> getAllWithDishes(@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate inMenuDate) {
         return super.getAllWithDishes(TODAY_MENU_DATE);
     }
 }

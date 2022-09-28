@@ -20,7 +20,7 @@ import static com.github.romanzin87.votingapp.web.user.UserTestData.ADMIN_MAIL;
 
 class AdminDishControllerTest extends AbstractControllerTest {
 
-    public static final String REST_URL = "/api/admin/restaurant/";
+    public static final String REST_URL = "/api/admin/restaurants/";
 
     @Autowired
     DishRepository dishRepository;
@@ -31,26 +31,27 @@ class AdminDishControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(ADMIN_MAIL)
     void get() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + DishTestData.RESTAURANT_ID + "/dish/" + DishTestData.DISH_ID))
+        perform(MockMvcRequestBuilders.get(REST_URL + DishTestData.RESTAURANT_ID + "/dishes/" + DishTestData.DISH_ID))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(DishTestData.DISH_MATCHER.contentJson(DishTestData.TEST_DISH));
+                .andExpect(DishTestData.DISH_MATCHER.contentJson(DishTestData.MARGARITA));
     }
 
     @Test
     @WithUserDetails(ADMIN_MAIL)
     void getAll() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + DishTestData.RESTAURANT_ID + "/dish"))
+        perform(MockMvcRequestBuilders.get(REST_URL + DishTestData.RESTAURANT_ID + "/dishes"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andDo(print());
+                .andDo(print())
+                .andExpect(DishTestData.DISH_MATCHER.contentJson(DishTestData.allPizzas));
     }
 
     @Test
     @WithUserDetails(ADMIN_MAIL)
     void delete() throws Exception {
-        perform(MockMvcRequestBuilders.delete(REST_URL + DishTestData.RESTAURANT_ID + "/dish/" + DishTestData.DISH_ID))
+        perform(MockMvcRequestBuilders.delete(REST_URL + DishTestData.RESTAURANT_ID + "/dishes/" + DishTestData.DISH_ID))
                 .andExpect(status().isNoContent());
         assertFalse(dishRepository.existsById(DishTestData.DISH_ID));
     }
@@ -60,7 +61,7 @@ class AdminDishControllerTest extends AbstractControllerTest {
     void createWithLocation() throws Exception {
         Dish newDish = DishTestData.getNew();
         newDish.setRestaurant(restaurantRepository.getExisted(DishTestData.RESTAURANT_ID));
-        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL + DishTestData.RESTAURANT_ID + "/dish/")
+        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL + DishTestData.RESTAURANT_ID + "/dishes/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newDish)))
                 .andExpect(status().isCreated())
@@ -76,7 +77,7 @@ class AdminDishControllerTest extends AbstractControllerTest {
     void update() throws Exception {
         Dish updatedDish = DishTestData.getUpdated();
         updatedDish.setRestaurant(restaurantRepository.getExisted(DishTestData.RESTAURANT_ID));
-        perform(MockMvcRequestBuilders.put(REST_URL + DishTestData.RESTAURANT_ID + "/dish/" + DishTestData.DISH_ID)
+        perform(MockMvcRequestBuilders.put(REST_URL + DishTestData.RESTAURANT_ID + "/dishes/" + DishTestData.DISH_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updatedDish)))
                 .andExpect(status().isNoContent())
