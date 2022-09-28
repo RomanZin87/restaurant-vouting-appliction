@@ -2,6 +2,8 @@ package com.github.romanzin87.votingapp.service;
 
 import com.github.romanzin87.votingapp.error.IllegalRequestDataException;
 import com.github.romanzin87.votingapp.error.LateVoteException;
+import com.github.romanzin87.votingapp.model.Restaurant;
+import com.github.romanzin87.votingapp.model.User;
 import com.github.romanzin87.votingapp.model.Vote;
 import com.github.romanzin87.votingapp.repository.RestaurantRepository;
 import com.github.romanzin87.votingapp.repository.UserRepository;
@@ -9,10 +11,9 @@ import com.github.romanzin87.votingapp.repository.VoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 
+import javax.persistence.EntityManager;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -20,14 +21,14 @@ import java.util.Optional;
 @Service
 public class VoteService {
     private final VoteRepository voteRepository;
+    private final EntityManager entityManager;
     private final RestaurantRepository restaurantRepository;
-    private final UserRepository userRepository;
 
     @Autowired
-    public VoteService(VoteRepository voteRepository, RestaurantRepository restaurantRepository, UserRepository userRepository) {
+    public VoteService(VoteRepository voteRepository, RestaurantRepository restaurantRepository, EntityManager em) {
         this.voteRepository = voteRepository;
         this.restaurantRepository = restaurantRepository;
-        this.userRepository = userRepository;
+        this.entityManager = em;
     }
 
     @Transactional
@@ -69,13 +70,13 @@ public class VoteService {
 
     private Vote save(int userId, int restaurantId) {
         Vote vote = new Vote();
-        vote.setUser(userRepository.get(userId));
+        vote.setUser(entityManager.getReference(User.class, userId));
         vote.setRestaurant(restaurantRepository.get(restaurantId));
         return voteRepository.save(vote);
     }
 
     private Vote update(Vote vote, int userId, int restaurantId) {
-        vote.setUser(userRepository.get(userId));
+        vote.setUser(entityManager.getReference(User.class, userId));
         vote.setRestaurant(restaurantRepository.get(restaurantId));
         return voteRepository.save(vote);
     }

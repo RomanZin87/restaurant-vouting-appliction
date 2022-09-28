@@ -1,27 +1,24 @@
 package com.github.romanzin87.votingapp.web.vote;
 
-import com.github.romanzin87.votingapp.model.Restaurant;
-import com.github.romanzin87.votingapp.util.JsonUtil;
+import com.github.romanzin87.votingapp.model.Vote;
+import com.github.romanzin87.votingapp.repository.VoteRepository;
 import com.github.romanzin87.votingapp.web.AbstractControllerTest;
-import com.github.romanzin87.votingapp.web.restaurant.RestaurantTestData;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import com.github.romanzin87.votingapp.model.Vote;
-import com.github.romanzin87.votingapp.repository.VoteRepository;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.Month;
 
-import static com.github.romanzin87.votingapp.web.restaurant.RestaurantTestData.RESTAURANT_MATCHER;
+import static com.github.romanzin87.votingapp.model.Vote.VOTE_DEADLINE;
 import static com.github.romanzin87.votingapp.web.user.UserTestData.*;
-import static com.github.romanzin87.votingapp.web.user.UserTestData.USER_ID;
-import static com.github.romanzin87.votingapp.web.vote.VoteTestData.*;
+import static com.github.romanzin87.votingapp.web.vote.VoteTestData.VOTE_MATCHER;
+import static com.github.romanzin87.votingapp.web.vote.VoteTestData.getNewVoteForUser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -45,28 +42,26 @@ class VoteControllerTest extends AbstractControllerTest {
         newForUser.setId(created.id());
         VOTE_MATCHER.assertMatch(created, newForUser);
     }
-//
-//    @Test
-//    @WithUserDetails(USER_MAIL)
-//    void lateVote() throws Exception {
-//        perform(MockMvcRequestBuilders.post(URL)
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(JsonUtil.writeValue(VoteTestData.TEST_LATE_VOTE)))
-//                .andExpect(status().isMethodNotAllowed())
-//                .andDo(print());
-//    }
-//
-//    @Test
-//    @WithUserDetails(USER_MAIL2)
-//    void reVote() throws Exception {
-//        perform(MockMvcRequestBuilders.put(URL)
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(JsonUtil.writeValue(VoteTestData.TEST_VOTE_UPDATED)))
-//                .andExpect(status().isNoContent());
-//        Vote updated = repository.findByUserId(VoteTestData.TEST_VOTE_UPDATED.getUserId());
-//        VoteTestData.TEST_VOTE_UPDATED.setId(updated.id());
-//        VoteTestData.VOTE_MATCHER.assertMatch(updated, VoteTestData.TEST_VOTE_UPDATED);
-//    }
+
+    @Test
+    @WithUserDetails(USER_MAIL)
+    void reVote() throws Exception {
+        ResultActions action = perform(MockMvcRequestBuilders.post(URL + "vote")
+                .param("restaurantId", "1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+        if (LocalTime.now().isAfter(VOTE_DEADLINE)) {
+            perform(MockMvcRequestBuilders.post(URL + "vote")
+                    .param("restaurantId", "2")
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isMethodNotAllowed());
+        } else {
+            perform(MockMvcRequestBuilders.post(URL + "vote")
+                    .param("restaurantId", "2")
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isCreated());
+        }
+    }
 
     @Test
     @WithUserDetails(USER_MAIL3)
