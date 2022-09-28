@@ -2,11 +2,9 @@ package com.github.romanzin87.votingapp.service;
 
 import com.github.romanzin87.votingapp.error.IllegalRequestDataException;
 import com.github.romanzin87.votingapp.error.LateVoteException;
-import com.github.romanzin87.votingapp.model.Restaurant;
 import com.github.romanzin87.votingapp.model.User;
 import com.github.romanzin87.votingapp.model.Vote;
 import com.github.romanzin87.votingapp.repository.RestaurantRepository;
-import com.github.romanzin87.votingapp.repository.UserRepository;
 import com.github.romanzin87.votingapp.repository.VoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

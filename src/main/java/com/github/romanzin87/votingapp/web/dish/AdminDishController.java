@@ -26,7 +26,7 @@ import static com.github.romanzin87.votingapp.util.validation.ValidationUtil.*;
 @Slf4j
 @RestController
 @AllArgsConstructor
-@CacheConfig(cacheNames = "dishes")
+@CacheConfig(cacheNames = {"dishes", "restaurants"})
 @RequestMapping(value = AdminDishController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class AdminDishController {
     public static final String REST_URL = "/api/admin/restaurants/{restaurantId}/dishes";

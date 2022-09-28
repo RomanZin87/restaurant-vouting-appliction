@@ -1,14 +1,14 @@
 package com.github.romanzin87.votingapp.web.user;
 
+import com.github.romanzin87.votingapp.HasIdAndEmail;
+import com.github.romanzin87.votingapp.repository.UserRepository;
+import com.github.romanzin87.votingapp.web.GlobalExceptionHandler;
+import com.github.romanzin87.votingapp.web.SecurityUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
-import com.github.romanzin87.votingapp.HasIdAndEmail;
-import com.github.romanzin87.votingapp.repository.UserRepository;
-import com.github.romanzin87.votingapp.web.GlobalExceptionHandler;
-import com.github.romanzin87.votingapp.web.SecurityUtil;
 
 import javax.servlet.http.HttpServletRequest;
 

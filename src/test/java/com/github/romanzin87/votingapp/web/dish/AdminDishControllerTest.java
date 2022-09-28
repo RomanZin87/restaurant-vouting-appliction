@@ -1,22 +1,22 @@
 package com.github.romanzin87.votingapp.web.dish;
 
 import com.github.romanzin87.votingapp.model.Dish;
+import com.github.romanzin87.votingapp.repository.DishRepository;
+import com.github.romanzin87.votingapp.repository.RestaurantRepository;
 import com.github.romanzin87.votingapp.util.JsonUtil;
+import com.github.romanzin87.votingapp.web.AbstractControllerTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import com.github.romanzin87.votingapp.repository.DishRepository;
-import com.github.romanzin87.votingapp.repository.RestaurantRepository;
-import com.github.romanzin87.votingapp.web.AbstractControllerTest;
 
+import static com.github.romanzin87.votingapp.web.user.UserTestData.ADMIN_MAIL;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static com.github.romanzin87.votingapp.web.user.UserTestData.ADMIN_MAIL;
 
 class AdminDishControllerTest extends AbstractControllerTest {
 

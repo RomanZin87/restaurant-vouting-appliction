@@ -1,9 +1,11 @@
 package com.github.romanzin87.votingapp.web.user;
 
 import com.github.romanzin87.votingapp.model.User;
+import com.github.romanzin87.votingapp.repository.UserRepository;
 import com.github.romanzin87.votingapp.to.UserTo;
 import com.github.romanzin87.votingapp.util.JsonUtil;
 import com.github.romanzin87.votingapp.util.UserUtil;
+import com.github.romanzin87.votingapp.web.AbstractControllerTest;
 import com.github.romanzin87.votingapp.web.GlobalExceptionHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,14 +13,12 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import com.github.romanzin87.votingapp.repository.UserRepository;
-import com.github.romanzin87.votingapp.web.AbstractControllerTest;
 
+import static com.github.romanzin87.votingapp.web.user.UserTestData.*;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static com.github.romanzin87.votingapp.web.user.UserTestData.*;
 
 class ProfileControllerTest extends AbstractControllerTest {
 

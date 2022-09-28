@@ -1,6 +1,7 @@
 package com.github.romanzin87.votingapp.web.user;
 
 import com.github.romanzin87.votingapp.model.User;
+import com.github.romanzin87.votingapp.repository.UserRepository;
 import com.github.romanzin87.votingapp.util.UserUtil;
 import com.github.romanzin87.votingapp.util.validation.ValidationUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +10,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
-import com.github.romanzin87.votingapp.repository.UserRepository;
 
 @Slf4j
 public abstract class AbstractUserController {

@@ -12,7 +12,6 @@ public class UserTestData {
     public static final MatcherFactory.Matcher<User> USER_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(User.class, "registered", "password");
     public static final int USER_ID = 1;
     public static final int ADMIN_ID = 2;
-
     public static final int USER3_ID = 4;
     public static final int NOT_FOUND = 100;
     public static final String USER_MAIL = "user@yandex.ru";
@@ -33,7 +32,7 @@ public class UserTestData {
         return new User(USER_ID, "UpdatedName", USER_MAIL, "newPass", false, new Date(), Collections.singleton(Role.ADMIN));
     }
 
-    public static String jsonWithPassword(User user, String passw) {
-        return JsonUtil.writeAdditionProps(user, "password", passw);
+    public static String jsonWithPassword(User user, String password) {
+        return JsonUtil.writeAdditionProps(user, "password", password);
     }
 }

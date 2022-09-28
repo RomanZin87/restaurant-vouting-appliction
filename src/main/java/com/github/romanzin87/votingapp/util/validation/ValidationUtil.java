@@ -1,10 +1,10 @@
 package com.github.romanzin87.votingapp.util.validation;
 
+import com.github.romanzin87.votingapp.HasId;
 import com.github.romanzin87.votingapp.error.IllegalRequestDataException;
 import lombok.experimental.UtilityClass;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.lang.NonNull;
-import com.github.romanzin87.votingapp.HasId;
 
 @UtilityClass
 public class ValidationUtil {
@@ -37,31 +37,11 @@ public class ValidationUtil {
         return obj;
     }
 
-
     public static <T> void checkExistedByEmail(T obj, String email) {
         if (obj == null) {
             throw new IllegalRequestDataException("Entity with email=" + email + " not found");
         }
     }
-//    public static void checkNotFoundWithId(boolean found, int id) {
-//        checkNotFound(found, "id=" + id);
-//    }
-//
-//    public static <T> T checkNotFoundWithId(T object, int id) {
-//        return checkNotFound(object, "id=" + id);
-//    }
-//
-//    public static <T> T checkNotFound(T object, String msg) {
-//        checkNotFound(object != null, msg);
-//        return object;
-//    }
-//
-//    public static void checkNotFound(boolean found, String msg) {
-//        if (!found) {
-//            throw new IllegalRequestDataException("Not found entity with " + msg);
-//        }
-//    }
-
 
     //  https://stackoverflow.com/a/65442410/548473
     @NonNull

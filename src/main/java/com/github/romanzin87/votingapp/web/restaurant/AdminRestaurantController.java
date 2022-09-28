@@ -19,11 +19,11 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.github.romanzin87.votingapp.util.validation.ValidationUtil.*;
+import static com.github.romanzin87.votingapp.util.validation.ValidationUtil.checkNew;
 
 @RestController
 @Slf4j
-@CacheConfig(cacheNames = "restaurants")
+@CacheConfig(cacheNames = {"restaurants", "dishes"})
 @RequestMapping(value = AdminRestaurantController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class AdminRestaurantController extends AbstractRestaurantController {
     static final String REST_URL = "/api/admin/restaurants";
@@ -47,6 +47,7 @@ public class AdminRestaurantController extends AbstractRestaurantController {
     }
 
     @Override
+    @Cacheable
     @GetMapping("/with-dishes")
     public List<Restaurant> getAllWithDishes(@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate inMenuDate) {
         return super.getAllWithDishes(inMenuDate);

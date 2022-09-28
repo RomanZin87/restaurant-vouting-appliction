@@ -2,10 +2,10 @@ package com.github.romanzin87.votingapp.util;
 
 import com.github.romanzin87.votingapp.model.Role;
 import com.github.romanzin87.votingapp.model.User;
+import com.github.romanzin87.votingapp.to.UserTo;
 import lombok.experimental.UtilityClass;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import com.github.romanzin87.votingapp.to.UserTo;
 
 @UtilityClass
 public class UserUtil {

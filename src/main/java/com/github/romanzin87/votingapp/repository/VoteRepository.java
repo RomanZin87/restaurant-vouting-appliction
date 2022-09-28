@@ -1,11 +1,10 @@
 package com.github.romanzin87.votingapp.repository;
 
+import com.github.romanzin87.votingapp.model.Vote;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
-import com.github.romanzin87.votingapp.model.Vote;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 

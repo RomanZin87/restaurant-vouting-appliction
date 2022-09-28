@@ -2,6 +2,7 @@ package com.github.romanzin87.votingapp.web.user;
 
 import com.github.romanzin87.votingapp.model.Role;
 import com.github.romanzin87.votingapp.model.User;
+import com.github.romanzin87.votingapp.repository.UserRepository;
 import com.github.romanzin87.votingapp.web.AbstractControllerTest;
 import com.github.romanzin87.votingapp.web.GlobalExceptionHandler;
 import org.junit.jupiter.api.Test;
@@ -12,7 +13,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import com.github.romanzin87.votingapp.repository.UserRepository;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertFalse;

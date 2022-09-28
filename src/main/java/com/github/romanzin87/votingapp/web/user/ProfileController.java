@@ -1,8 +1,10 @@
 package com.github.romanzin87.votingapp.web.user;
 
 import com.github.romanzin87.votingapp.model.User;
+import com.github.romanzin87.votingapp.to.UserTo;
 import com.github.romanzin87.votingapp.util.UserUtil;
 import com.github.romanzin87.votingapp.util.validation.ValidationUtil;
+import com.github.romanzin87.votingapp.web.AuthUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
@@ -13,8 +15,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import com.github.romanzin87.votingapp.to.UserTo;
-import com.github.romanzin87.votingapp.web.AuthUser;
 
 import javax.validation.Valid;
 import java.net.URI;

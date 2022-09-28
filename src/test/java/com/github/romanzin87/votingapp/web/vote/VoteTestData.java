@@ -8,6 +8,7 @@ import static com.github.romanzin87.votingapp.web.user.UserTestData.user;
 
 public class VoteTestData {
     public static final MatcherFactory.Matcher<Vote> VOTE_MATCHER = MatcherFactory.usingEqualsComparator(Vote.class);
+
     public static Vote getNewVoteForUser() {
         return new Vote(null, user, PIZZERIA);
     }

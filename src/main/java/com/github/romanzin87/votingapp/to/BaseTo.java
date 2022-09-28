@@ -1,11 +1,11 @@
 package com.github.romanzin87.votingapp.to;
 
+import com.github.romanzin87.votingapp.HasId;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.github.romanzin87.votingapp.HasId;
 
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
