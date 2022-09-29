@@ -27,7 +27,7 @@ class VoteControllerTest extends AbstractControllerTest {
     public static final String URL = VoteController.REST_URL + "/";
 
     @Autowired
-    VoteRepository repository;
+    private VoteRepository repository;
 
     @Test
     @WithUserDetails(USER_MAIL)

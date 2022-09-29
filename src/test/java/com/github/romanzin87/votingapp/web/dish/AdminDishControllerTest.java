@@ -23,10 +23,10 @@ class AdminDishControllerTest extends AbstractControllerTest {
     public static final String REST_URL = "/api/admin/restaurants/";
 
     @Autowired
-    DishRepository dishRepository;
+    private DishRepository dishRepository;
 
     @Autowired
-    RestaurantRepository restaurantRepository;
+    private RestaurantRepository restaurantRepository;
 
     @Test
     @WithUserDetails(ADMIN_MAIL)

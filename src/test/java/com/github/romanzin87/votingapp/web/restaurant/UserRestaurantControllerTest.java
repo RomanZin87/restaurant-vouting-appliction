@@ -19,7 +19,7 @@ class UserRestaurantControllerTest extends AbstractControllerTest {
     private static final String REST_URL = UserRestaurantController.REST_URL + "/";
 
     @Autowired
-    RestaurantRepository repository;
+    private RestaurantRepository repository;
 
     @Test
     @WithUserDetails(USER_MAIL)
